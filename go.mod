@@ -26,6 +26,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220209195652-db638375bc3a // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
+	gopkg.in/ini.v1 v1.66.4
 	periph.io/x/periph v3.6.8+incompatible // indirect
 	tinygo.org/x/bluetooth v0.4.0 // indirect
 )

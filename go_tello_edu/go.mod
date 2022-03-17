@@ -24,6 +24,7 @@ require (
 	gocv.io/x/gocv v0.29.0 // indirect
 	golang.org/x/crypto v0.0.0-20220210151621-f4118a5b28e2 // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	periph.io/x/periph v3.6.8+incompatible // indirect
