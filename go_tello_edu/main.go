@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 	"udemy_drone/go_tello_edu/app/controllers"
-	"udemy_drone/go_tello_edu/app/utils"
 	"udemy_drone/go_tello_edu/config"
+	"udemy_drone/go_tello_edu/utils"
 )
 
 func main() {

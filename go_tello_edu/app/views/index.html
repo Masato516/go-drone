@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
-  Hello
-</body>
-</html>
+{{ template "layout.html"}}
+
+{{ define "content"}}
+<div align="center">
+  <h1>Drone App</h1>
+  <img width="100%" src="/static/img/Drone.png">
+</div>
+<ul data-role="listview">
+  <li><a href="/controller/">Controller</a></li>
+  <li><a href="/games/shake/">Shake game</a></li>
+</ul>
+{{ end }}
