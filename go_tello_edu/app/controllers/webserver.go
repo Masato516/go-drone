@@ -39,6 +39,7 @@ type APIResult struct {
 	Code   int         `json:result`
 }
 
+// HTTPのAPIレスポンスを作成
 func APIResponse(w http.ResponseWriter, result interface{}, code int) {
 	res := APIResult{Result: result, Code: code}
 	js, err := json.Marshal(res)
@@ -52,6 +53,7 @@ func APIResponse(w http.ResponseWriter, result interface{}, code int) {
 
 var apiValidPath = regexp.MustCompile("^/api/(command|shake|video)")
 
+// http.handlerFuncを返すWrapperみたいな役割
 func apiMakeHandler(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		m := apiValidPath.FindStringSubmatch(r.URL.Path)
@@ -63,6 +65,7 @@ func apiMakeHandler(fn func(w http.ResponseWriter, r *http.Request)) http.Handle
 	}
 }
 
+// リクエストされたAPIのハンドラー(ログ出力、APIのレスポンスのWrapper)
 func apiCommandHandler(w http.ResponseWriter, r *http.Request) {
 	command := r.FormValue("command")
 	log.Printf("action=apiCommandHandler command=%s", command)
