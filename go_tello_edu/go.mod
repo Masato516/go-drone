@@ -13,6 +13,7 @@ require (
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
+	github.com/hybridgroup/mjpeg v0.0.0-20140228234708-4680f319790e // indirect
 	github.com/muka/go-bluetooth v0.0.0-20220201183156-3ac497e99331 // indirect
 	github.com/nats-io/nats.go v1.13.0 // indirect
 	github.com/sigurn/crc8 v0.0.0-20220107193325-2243fe600f9f // indirect

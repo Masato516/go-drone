@@ -7,8 +7,18 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
+	"udemy_drone/go_tello_edu/app/models"
 	"udemy_drone/go_tello_edu/config"
 )
+
+var appContext struct {
+	DroneManager *models.DroneManager
+}
+
+func init() {
+	appContext.DroneManager = models.NewDroneManager()
+}
 
 func getTemplate(temp string) (*template.Template, error) {
 	return template.ParseFiles("app/views/layout.html", temp)
@@ -65,10 +75,71 @@ func apiMakeHandler(fn func(w http.ResponseWriter, r *http.Request)) http.Handle
 	}
 }
 
+// HTTPリクエストから速度情報を取得
+func getSpeed(r *http.Request) int {
+	strSpeed := r.FormValue("speed")
+	if strSpeed == "" {
+		return models.DefaultSpeed
+	}
+	speed, err := strconv.Atoi(strSpeed)
+	if err != nil {
+		return models.DefaultSpeed
+	}
+	return speed
+}
+
 // リクエストされたAPIのハンドラー(ログ出力、APIのレスポンスのWrapper)
 func apiCommandHandler(w http.ResponseWriter, r *http.Request) {
 	command := r.FormValue("command")
 	log.Printf("action=apiCommandHandler command=%s", command)
+	drone := appContext.DroneManager
+	switch command {
+	case "ceaseRotation":
+		drone.CeaseRotation()
+	case "takeOff":
+		drone.TakeOff()
+	case "land":
+		drone.Land()
+	case "hover":
+		drone.Hover()
+	case "up":
+		drone.Up(drone.Speed)
+	case "clockwise":
+		drone.Clockwise(drone.Speed)
+	case "counterClockwise":
+		drone.CounterClockwise(drone.Speed)
+	case "down":
+		drone.Down(drone.Speed)
+	case "forward":
+		drone.Forward(drone.Speed)
+	case "left":
+		drone.Left(drone.Speed)
+	case "right":
+		drone.Right(drone.Speed)
+	case "backward":
+		drone.Backward(drone.Speed)
+	case "frontFlip":
+		drone.FrontFlip()
+	case "backFlip":
+		drone.BackFlip()
+	case "leftFlip":
+		drone.LeftFlip()
+	case "rightFlip":
+		drone.RightFlip()
+	case "bounce":
+		drone.Bounce()
+	case "throwTakeOff":
+		drone.ThrowTakeOff()
+	case "patrol":
+		drone.StartPatrol()
+	case "stopPatrol":
+		drone.StopPatrol()
+	case "speed":
+		drone.Speed = getSpeed(r)
+	default:
+		APIResponse(w, "Command not found", http.StatusNotFound)
+		return
+	}
 	APIResponse(w, "OK", http.StatusOK)
 }
 
@@ -76,6 +147,7 @@ func StartWebServer() error {
 	http.HandleFunc("/", viewIndexHandler)
 	http.HandleFunc("/controller/", viewControllerHandler)
 	http.HandleFunc("/api/command/", apiMakeHandler(apiCommandHandler))
+	http.Handle("/video/streaming", appContext.DroneManager.Stream)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	return http.ListenAndServe(fmt.Sprintf("%s:%d", config.Config.Address, config.Config.Port), nil)
 }
