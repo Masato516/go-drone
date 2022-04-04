@@ -45,8 +45,8 @@ func viewControllerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 type APIResult struct {
-	Result interface{} `json:result`
-	Code   int         `json:result`
+	Result interface{} `json:"result"`
+	Code   int         `json:"code"`
 }
 
 // HTTPのAPIレスポンスを作成
