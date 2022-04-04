@@ -18,13 +18,21 @@
   }
   
   $(document).on('pageinit', function(){
-    $('#slide-speed').on("slidestop", function(event){
+    $('#slider-speed').on("slidestop", function(event){
       let params = {
-        speed: $('#slide-speed').val(),
+        speed: $('#slider-speed').val(),
       }
       sendCommand('speed', params)
     })
   })
+  
+  function snapShot(){
+    $.post("/api/command/", {'command': 'snapshot'}).done(function(json){
+      $('#div-snapshot').show();
+      // ~.jpgの後に?数値をつけsrcの値を変化させることで、/static/img/snapshots/snapshot.jpgのsrcを再読み込みできる
+      $('#snapshot').attr('src', $('#snapshot').attr('src') + '?' + Math.random());
+    }, 'json')
+  }
 </script>
 
 <div class="controller-box">
@@ -107,9 +115,22 @@
   <div data-role="controlgroup" data-type="horizontal">
       <a href="#" data-role="button" data-inline="true" onclick="sendCommand('patrol'); return false;">Patrol</a>
       <a href="#" data-role="button" data-inline="true" onclick="sendCommand('stopPatrol'); return false;">Stop Patrol</a>
+      <a href="#" data-role="button" data-inline="true" onclick="sendCommand('startFaceDetectTrack'); return false;">Face Track</a>
+      <a href="#" data-role="button" data-inline="true" onclick="sendCommand('stopFaceDetectTrack'); return false;">Stop Face Track</a>
   </div>
   <br>
   <img src="/video/streaming">
+</div>
+
+<div class="controller-box">
+  <h3>CAMERA</h3>
+  <div data-role="controlgroup" data-type="horizontal">
+      <a href="#" data-role="button" data-inline="true" onclick="snapShot(); return false;">Snapshot</a>
+  </div>
+  <br>
+  <div id="div-snapshot" style="display: none">
+      <img id="snapshot" src="/static/img/snapshots/snapshot.jpg">
+  </div>
 </div>
 
 {{ end }}

@@ -79,6 +79,7 @@ func apiMakeHandler(fn func(w http.ResponseWriter, r *http.Request)) http.Handle
 func getSpeed(r *http.Request) int {
 	strSpeed := r.FormValue("speed")
 	if strSpeed == "" {
+		log.Println("スピード情報が取得できませんでした")
 		return models.DefaultSpeed
 	}
 	speed, err := strconv.Atoi(strSpeed)
@@ -136,6 +137,13 @@ func apiCommandHandler(w http.ResponseWriter, r *http.Request) {
 		drone.StopPatrol()
 	case "speed":
 		drone.Speed = getSpeed(r)
+		log.Printf("スピードを%dに変更しました", drone.Speed)
+	case "startFaceDetectTrack":
+		drone.EnableFaceDetectTracking()
+	case "stopFaceDetectTrack":
+		drone.DisableFaceDetectTracking()
+	case "snapshot":
+		drone.TakeSnapshot()
 	default:
 		APIResponse(w, "Command not found", http.StatusNotFound)
 		return
