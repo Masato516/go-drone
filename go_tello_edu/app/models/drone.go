@@ -93,6 +93,11 @@ func NewDroneManager() *DroneManager {
 				log.Println(err)
 			}
 		})
+
+		drone.Once(tello.FlightDataEvent, func(data interface{}) {
+			pkt := data.(*tello.FlightData)
+			log.Println("Battery:", pkt.BatteryPercentage, "%")
+		})
 	}
 	robot := gobot.NewRobot("tello", []gobot.Connection{}, []gobot.Device{drone}, work)
 	// goroutineを使わないと以降のコードが実行されない
@@ -164,6 +169,7 @@ func (d *DroneManager) StopPatrol() {
 	}
 }
 
+// 画像への装飾を加えるメソッド
 func (d *DroneManager) StreamVideo() {
 	go func(d *DroneManager) {
 		classifier := gocv.NewCascadeClassifier()
