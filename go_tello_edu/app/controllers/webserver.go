@@ -13,11 +13,13 @@ import (
 )
 
 var appContext struct {
-	DroneManager *models.DroneManager
+	DroneManager   *models.DroneManager
+	DefaultCourses map[int]models.BaseCourse
 }
 
 func init() {
 	appContext.DroneManager = models.NewDroneManager()
+	appContext.DefaultCourses = models.NewDefaultCourse(appContext.DroneManager)
 }
 
 func getTemplate(temp string) (*template.Template, error) {
@@ -151,10 +153,38 @@ func apiCommandHandler(w http.ResponseWriter, r *http.Request) {
 	APIResponse(w, "OK", http.StatusOK)
 }
 
+func apiStartShakeHandler(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	strId := query.Get("id")
+	id, err := strconv.Atoi(strId)
+	if err != nil {
+		APIResponse(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	course := appContext.DefaultCourses[id]
+	course.Start()
+	APIResponse(w, "started", http.StatusOK)
+}
+
+func apiRunShakeHandler(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	strId := query.Get("id")
+	id, err := strconv.Atoi(strId)
+	if err != nil {
+		APIResponse(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	course := appContext.DefaultCourses[id]
+	course.Run()
+	APIResponse(w, course, http.StatusOK)
+}
+
 func StartWebServer() error {
 	http.HandleFunc("/", viewIndexHandler)
 	http.HandleFunc("/controller/", viewControllerHandler)
 	http.HandleFunc("/api/command/", apiMakeHandler(apiCommandHandler))
+	http.HandleFunc("/api/shake/start/", apiMakeHandler(apiStartShakeHandler))
+	http.HandleFunc("/api/shake/run/", apiMakeHandler(apiRunShakeHandler))
 	http.Handle("/video/streaming", appContext.DroneManager.Stream)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	return http.ListenAndServe(fmt.Sprintf("%s:%d", config.Config.Address, config.Config.Port), nil)
